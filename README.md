@@ -9,9 +9,9 @@ License: MIT
 
 ## Hardware
 
-Tested on Orange Pi as I2C Master and I2C Slave:
-  - Mini Pro (3.3V 8MHz)
-  
+Tested on:
+  - I2C Slave Master: Orange Pi Lite (Armbian) <---> I2C Slave: Mini Pro (3.3V 8MHz)
+
 ## Implementation status
 
 Implemented:
