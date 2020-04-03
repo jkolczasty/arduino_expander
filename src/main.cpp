@@ -285,7 +285,7 @@ void setup() {
 #ifdef LED_PIN
 uint16_t led_div_count = 0;
 uint16_t led = 0;
-#define LED_DIV 10
+#define LED_DIV 1000
 #endif
 
 void loop() {
