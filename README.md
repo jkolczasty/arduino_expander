@@ -62,6 +62,16 @@ Means:
   - 0,1,0 - set item 0 value 1 (item is an index of configured GPIOs, see configuration)
   - 2,255,0 - set item 2 value 255 (PWM, see *Configure*)
   
+## Reading values
 
+Just send read request and will respond with config frame with current values.
 
+Example:
+
+1,7,1,0,2,8,1,0,5,9,50,0
+
+Means:
+  - 1,7,1,0 - set GPIO 7 in mode 1 (OUTPUT) and current value 1
+  - 2,8,1,0 - set GPIO 8 in mode 2 (INPUT) and current value 1
+  - 5,9,100,0 - set GPIO 9 in mode 5 (PWM) and current duty cycle 100
 
