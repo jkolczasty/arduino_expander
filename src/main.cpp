@@ -14,6 +14,7 @@
 
 #include <Arduino.h>
 #include <Wire.h>
+#include <EEPROM.h>
 
 #define LED_PIN 13  // mini pro
 #define I2C_SLAVE_ADDRESS 0x29
@@ -89,6 +90,16 @@ void digitalPinInterrupt()
     };
   };
 };
+
+void eeprom_load()
+{
+  EEPROM.get(0, data);
+}
+
+void eeprom_save()
+{
+  EEPROM.put(0, data);
+}
 
 void configure()
 {
@@ -241,6 +252,7 @@ void i2c_receive(int bc)
           };
           configure();
           set();
+          eeprom_save();
       };
 
       // Set values, 3 bytes data per item (item index, value low byte, value high byte)
@@ -274,9 +286,10 @@ void setup() {
 #ifdef LED_PIN
   pinMode (LED_PIN, OUTPUT);
 #endif
-  // TODO: read from EEPROM
-
+  
+  eeprom_load();
   configure();
+
   Wire.begin(I2C_SLAVE_ADDRESS);
   Wire.onRequest(i2c_request);
   Wire.onReceive(i2c_receive);

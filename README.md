@@ -22,7 +22,6 @@ Implemented:
 
 ## TODO
   - analog inputs
-  - persistent configuration (internal flash memory)
   - interrupts
 
 ## USAGE
