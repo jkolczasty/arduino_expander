@@ -19,15 +19,12 @@
 #define DATA_ITEM_LENGTH 4
 #define DATA_SIZE DATA_ITEMS*DATA_ITEM_LENGTH
 
-
 #define DATA_CLEAR memset((void *)&data, 0, sizeof(data));
-// #define RECVFRAME_CLEAR memset((void *)&recvframe, 0, sizeof(recvframe)); recvframe_c = 0; recvframe_ready = 0;
-// #define SENDFRAME_CLEAR memset((void *)&sendframe, 0, sizeof(sendframe)); sendframe_c = 0;
-// #define SENDFRAME_SERIAL Serial.print("SEND: "); Serial.print(sendframe[0]); Serial.print(sendframe[1]); Serial.print(sendframe[2]); Serial.print(sendframe[3]); Serial.println(sendframe[4]);
 
-const uint16_t PWM_MAX = 1023;
+const uint16_t PWM_MAX = 255;
 
-uint8_t data[DATA_SIZE];  // mode, gpio, value1, value2
+uint8_t data[DATA_SIZE];  // mode, gpio, conf1, conf2
+uint16_t values[DATA_ITEMS];
 
 // TODO: test and implement interrupts - so far had no time to do so as not all GPIOs have (working) interrupts
 //       and I don't really know much about them
@@ -126,23 +123,26 @@ void configure()
 
     if (mode == 1)
     {
+#ifdef DEBUG      
       Serial.print("CONF: ");
       Serial.print(i);
       Serial.print(" gpio ");
       Serial.print(gpio);
       Serial.println(" OUTPUT ");
+#endif
       pinMode(gpio, OUTPUT);
       continue;
     };
 
     if (mode == 2)
     {
+#ifdef DEBUG      
       Serial.print("CONF: ");
       Serial.print(i);
       Serial.print(" gpio ");
       Serial.print(gpio);
       Serial.println(" INPUT ");
-
+#endif
       pinMode(gpio, INPUT);
       // pinMode(gpio, INPUT_PULLUP);
       interrupt = getPinInterrupt(gpio);
@@ -174,12 +174,13 @@ void configure()
     if (mode == 5)
     {
       pinMode(gpio, OUTPUT);
+#ifdef DEBUG      
       Serial.print("CONF: ");
       Serial.print(i);
       Serial.print(" gpio ");
       Serial.print(gpio);
       Serial.println(" PWM ");
-      
+#endif
       continue;
     };
   };
@@ -205,29 +206,30 @@ void set()
 
     if (mode == 1)
     {
+#ifdef DEBUG2
       Serial.print("SET: ");
       Serial.print(i);
       Serial.print(" gpio ");
       Serial.print(gpio);
       Serial.print(" OUTPUT ");
-      Serial.println(data[idx+2]);
-
-      digitalWrite(gpio, data[idx+2]);
+      Serial.println(values[i]);
+#endif
+      digitalWrite(gpio, values[i]);
       continue;
     };
 
     //WARNING: most arduino boards supports only 8bit PWM 0-255
     if (mode == 5)
     {
-      uint16_t v = min(data[idx+2] + ((uint16_t)(data[idx+3]) << 8), PWM_MAX);
-
+      uint16_t v = min(values[i], PWM_MAX);
+#ifdef DEBUG2
       Serial.print("SET: ");
       Serial.print(i);
       Serial.print(" gpio ");
       Serial.print(gpio);
       Serial.print(" PWM ");
       Serial.println((int)v);
-
+#endif
       analogWrite(gpio, (int)v);
 
       data[idx+2] = v & 0xFF;

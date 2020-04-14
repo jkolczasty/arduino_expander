@@ -15,6 +15,9 @@
 
 #include <Arduino.h>
 
+// #define DEBUG 1
+// #define DEBUG2 1
+
 #define LED_PIN 13  // mini pro
 
 #include "expander_common.h"
@@ -27,9 +30,11 @@
 
 
 void setup() {
+#ifdef DEBUG  
   Serial.begin(115200);
   delay(10);
   Serial.println("INIT");
+#endif
 
 #ifdef LED_PIN
   pinMode (LED_PIN, OUTPUT);
@@ -40,20 +45,13 @@ void setup() {
 
   //
   setup_expander();
-
+#ifdef DEBUG
   Serial.println("ready");
+#endif
 }
 
 
 void loop() {
-
-  // Serial.print(recvdata_c);
-  // Serial.print(" ");
-  // Serial.print(recvdata[0]);
-  // Serial.print(" ");
-  // Serial.print(recvdata[1]);
-  // Serial.print(" ");
-  // Serial.println(recvdata_ready);
 
   loop_expander();
 
@@ -65,15 +63,15 @@ void loop() {
     if ((data[idx]==2) || (data[idx]==3))
     {
       uint8_t v = digitalRead(data[idx+1]);
-      if (v != data[idx+2])
+      if (v != values[i])
       {
 #ifdef LED_PIN
         LEDC++;
 #endif
+        values[i] = v;
 #ifdef EXPANDER_ON_CHANGE
         expander_on_change(i);
 #endif
-        data[idx+2] = v;
       };
     };
   };

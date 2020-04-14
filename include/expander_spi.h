@@ -147,6 +147,12 @@ void process_request()
 
   if (recvframe[0] == 1)
   {
+    //request_get_full_config();
+    return;
+  };
+
+  if (recvframe[0] == 2)
+  {
     request_get_config();
     return;
   };
